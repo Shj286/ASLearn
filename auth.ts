@@ -1,47 +1,70 @@
-import NextAuth from "next-auth"
-import { ZodError } from "zod"
-import Credentials from "next-auth/providers/credentials"
-import Google from "next-auth/providers/google"
-import { signInSchema } from "./lib/zod"
-// Your own logic for dealing with plaintext password strings; be careful!
-import { saltAndHashPassword } from "@/utils/password"
-import { getUserFromDb } from "@/utils/db"
- 
-export const { handlers, auth } = NextAuth({
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+import { authSchema } from "./lib/zod";
+import { getUser } from "./lib/queries";
+import { compare } from "bcrypt-ts";
+
+export const config = {
+  runtime: "nodejs",
+};
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    // Credentials({
-    //   // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-    //   // e.g. domain, username, password, 2FA token, etc.
-    //   credentials: {
-    //     email: {},
-    //     password: {},
-    //   },
-    //   authorize: async (credentials) => {
-    //     try {
-    //       let user = null
- 
-    //       const { email, password } = await signInSchema.parseAsync(credentials)
- 
-    //       // logic to salt and hash password
-    //       const pwHash = saltAndHashPassword(password)
- 
-    //       // logic to verify if the user exists
-    //       user = await getUserFromDb(email, pwHash)
- 
-    //       if (!user) {
-    //         throw new Error("Invalid credentials.")
-    //       }
- 
-    //       // return JSON object with the user data
-    //       return user
-    //     } catch (error) {
-    //       if (error instanceof ZodError) {
-    //         // Return `null` to indicate that the credentials are invalid
-    //         return null
-    //       }
-    //     }
-    //   },
-    // }),
-    Google
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        try {
+          let user = null;
+
+          const { email, password } = await authSchema.omit({ name: true }).parseAsync(credentials);
+
+          user = await getUser({ email });
+          if (!user) return null;
+
+          const passwordMatch = await compare(password, user.password);
+          if (!passwordMatch) return null;
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.fullName,
+          };
+        } catch (error) {
+          console.error("Authentication error:", error);
+        }
+      },
+    }),
+    Google,
   ],
-})
+  // Use JWT strategy for session management
+  session: { strategy: "jwt" },
+  pages: {
+    signIn: "/login",
+    // You can also customize other pages:
+    // signOut: '/auth/signout',
+    // error: '/auth/error',
+    // newUser: '/auth/new-user'
+  },
+  callbacks: {
+    // Customize JWT contents
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        // Add any other user properties you want in the JWT
+      }
+      return token;
+    },
+    // Customize session object
+    session: async ({ session, token }) => {
+      if (token) {
+        session.user.id = token.id as string;
+        // Add any other token properties to the session
+      }
+      return session;
+    },
+  },
+});

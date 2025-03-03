@@ -1,6 +1,8 @@
 import { object, string } from "zod"
  
-export const signInSchema = object({
+export const authSchema = object({
+  name: string({required_error: "Name is required"})
+    .min(1, "Name is Required"),
   email: string({ required_error: "Email is required" })
     .min(1, "Email is required")
     .email("Invalid email"),
@@ -9,3 +11,4 @@ export const signInSchema = object({
     .min(8, "Password must be more than 8 characters")
     .max(32, "Password must be less than 32 characters"),
 })
+

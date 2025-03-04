@@ -64,10 +64,13 @@ export async function login(_: LoginActionState, formData: FormData): Promise<Lo
   }
 }
 
-export async function signInWithGoogle(){
+export async function signInWithGoogle() {
   try {
-    await signIn("google");
+    // need to save user in database as well
+    await signIn("google", {
+      redirectTo: "/lessons",
+    });
   } catch (error) {
-    console.error("Failed to sign in with Google", error)
+    console.error("Failed to sign in with Google", error);
   }
 }

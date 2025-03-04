@@ -6,42 +6,15 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#faf6eb]">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
+        {/* Updated Header to match sign-in page */}
         <header className="mb-12 pt-4">
-          <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-serif italic">A s l</h1>
-            <div className="flex gap-1">
-              <Image
-                src="/placeholder.svg?height=24&width=24"
-                alt="Sign language symbol"
-                width={24}
-                height={24}
-                className="object-contain"
-              />
-              <Image
-                src="/placeholder.svg?height=24&width=24"
-                alt="Sign language symbol"
-                width={24}
-                height={24}
-                className="object-contain"
-              />
-              <Image
-                src="/placeholder.svg?height=24&width=24"
-                alt="Sign language symbol"
-                width={24}
-                height={24}
-                className="object-contain"
-              />
-              <Image
-                src="/placeholder.svg?height=24&width=24"
-                alt="Sign language symbol"
-                width={24}
-                height={24}
-                className="object-contain"
-              />
+          <div className="flex items-center">
+            <span className="text-3xl font-serif italic">ASL</span>
+            <div className="ml-1 flex">
+              {/* Sign language finger spelling for "LEARN" */}
+              <span className="text-xs tracking-widest mt-1">LEARN</span>
             </div>
           </div>
-          <div className="ml-12 uppercase tracking-[0.5em] text-sm font-light">L E A R N</div>
         </header>
 
         {/* Feature Cards */}
@@ -118,7 +91,7 @@ export default function Home() {
         {/* Get Started Button */}
         <div className="flex justify-end">
           <Link
-            href="/lessons"
+            href="/login"
             className="flex items-center gap-2 bg-white border border-gray-300 rounded-full px-6 py-3 hover:shadow-md transition-shadow"
           >
             <span className="font-medium">Get Started</span>

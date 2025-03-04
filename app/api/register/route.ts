@@ -1,29 +1,42 @@
-import { createUser, getUser } from "@/lib/queries";
+import { getUser, createUser } from "@/lib/queries";
+import { hash } from "bcrypt-ts";
+import { NextResponse } from "next/server";
 
-export const config = {
-  runtime: "nodejs", // Force nodejs runtime for mongo actions
-};
-
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { fullName, email, password } = await req.json();
-
-    // check if user exists already
-    const user = await getUser({ email });
-
-    if (user?._id) return new Response("User already exists", { status: 205 });
-
-    const result = await createUser({ fullName, email, password });
-
-    if (!result.acknowledged && result.insertedId) {
-      console.error("User creation failed: Operation not acknowledged");
-      return { success: false, error: "Failed to create user" };
+    const { email, password, fullName } = await request.json();
+    
+    // Check if user already exists
+    const existingUser = await getUser({ email });
+    if (existingUser) {
+      return NextResponse.json({ 
+        success: false, 
+        message: "User already exists with this email" 
+      });
     }
-
-    console.log(`User created successfully with ID: ${result.insertedId}`);
-    return new Response("User Created Sucessfully!", { status: 200, success: true, userId: result.insertedId.toString() });
+    
+    // Hash the password
+    const hashedPassword = await hash(password, 10);
+    
+    // Create the user
+    const result = await createUser({
+      email,
+      password: hashedPassword,
+      fullName,
+    });
+    
+    console.log("User created with ID:", result.insertedId);
+    
+    return NextResponse.json({ 
+      success: true,
+      message: "User registered successfully",
+      userId: result.insertedId
+    });
   } catch (error) {
-    console.error(`An error occured while creating user: ${error}`);
-    return new Response("An unexpected error occured", { status: 500 });
+    console.error("Registration error:", error);
+    return NextResponse.json({ 
+      success: false, 
+      message: String(error) 
+    }, { status: 500 });
   }
 }

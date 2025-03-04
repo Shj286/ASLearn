@@ -34,7 +34,7 @@ export default function SignUp({ onSubmit }: { onSubmit: (formData: FormData) =>
             </div>
 
             <div className="mt-6">
-              <form action={onSubmit} method="POST" className="space-y-6">
+              <form action={onSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="fullname" className="block text-sm font-medium leading-6 text-gray-900">
                     Full Name
@@ -107,9 +107,9 @@ export default function SignUp({ onSubmit }: { onSubmit: (formData: FormData) =>
             </div>
 
             <p className="mt-10 text-center text-sm text-gray-500">
-              Don&apos;t have an account?{" "}
-              <Link href="login" className="font-semibold leading-6 text-blue-600 hover:text-blue-500">
-                Sign Up
+              Already have an account?{" "}
+              <Link href="/login" className="font-semibold leading-6 text-blue-600 hover:text-blue-500">
+                Sign In
               </Link>
             </p>
           </div>

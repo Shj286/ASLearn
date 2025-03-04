@@ -1,6 +1,6 @@
 "use server";
 
-import { genSaltSync, hashSync } from "bcrypt-ts";
+import { hash, compare } from "bcrypt-ts";
 import { MongoClient, ServerApiVersion } from "mongodb";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -35,10 +35,12 @@ async function connectToDatabase() {
 export async function getUser({ email }: { email: string }) {
   try {
     await connectToDatabase();
-    return await db.collection("users").findOne({ email: email });
+    const user = await db.collection("users").findOne({ email });
+    console.log("User found:", user ? "Yes" : "No");
+    return user;
   } catch (error) {
-    console.error(`Failed to fetch user from the database: ${error}`);
-    throw error;
+    console.error("Error fetching user:", error);
+    return null;
   }
 }
 
@@ -46,10 +48,9 @@ export async function createUser({ fullName, email, password }: { fullName: stri
   try {
     await connectToDatabase();
 
-    const salt = genSaltSync(10);
-    const hash = hashSync(password, salt);
+    const hashedPassword = await hash(password, 10);
 
-    return await db.collection("users").insertOne({ fullName, email, password: hash });
+    return await db.collection("users").insertOne({ fullName, email, password: hashedPassword });
   } catch (error) {
     console.error(`Failed to create user in the database: ${error}`);
     throw error;

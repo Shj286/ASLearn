@@ -16,18 +16,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: {},
         password: {},
       },
-      authorize: async (credentials) => {
+      authorize: async (credentials, request) => {
         try {
-          let user = null;
-
           const { email, password } = await authSchema.omit({ name: true }).parseAsync(credentials);
 
-          user = await getUser({ email });
-          if (!user) return null;
+          // Debug log
+          console.log(`Authenticating user with email: ${email}`);
+          
+          const user = await getUser({ email });
+          console.log(`User found in DB: ${!!user}`);
+          
+          if (!user) {
+            console.log("No user found with this email");
+            return null;
+          }
 
+          // Debug log the stored password (be careful with this in production!)
+          console.log(`Password in DB: ${user.password ? "exists" : "missing"}`);
+          
           const passwordMatch = await compare(password, user.password);
-          if (!passwordMatch) return null;
+          console.log(`Password match: ${passwordMatch}`);
+          
+          if (!passwordMatch) {
+            console.log("Password doesn't match");
+            return null;
+          }
 
+          console.log("Authentication successful");
           return {
             id: user.id,
             email: user.email,
@@ -35,10 +50,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           };
         } catch (error) {
           console.error("Authentication error:", error);
+          return null;
         }
       },
     }),
-    Google,
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
   // Use JWT strategy for session management
   session: { strategy: "jwt" },
@@ -67,4 +86,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session;
     },
   },
+  debug: true, // Enable debug mode for more verbose logs
 });

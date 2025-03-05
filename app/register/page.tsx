@@ -1,44 +1,34 @@
 "use client"
 
-import React from "react";
+import React, { useActionState, useEffect } from "react";
 import SignUp from "@/components/sign-up";
+import { register, RegisterActionState } from "../actions";
+import { redirect } from "next/navigation";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 const Register = () => {
-  const router = useRouter();
-  
-  const handleSubmit = async (formData: FormData) => {
-    try {
-      const email = formData.get("email") as string;
-      const password = formData.get("password") as string;
-      const fullName = formData.get("fullname") as string;
-      
-      console.log("Registration attempt with email:", email);
-      
-      // Register the user
-      const registerResponse = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName })
-      }).then(res => res.json());
-      
-      console.log("Registration result:", registerResponse);
-      
-      if (registerResponse.success) {
-        toast.success("Registration successful! Please log in.");
-        
-        // Redirect to login page instead of directly signing in
-        setTimeout(() => {
-          router.push("/login");
-        }, 1500); // Short delay so the user can see the success message
-      } else {
-        toast.error(registerResponse.message || "Registration failed");
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      toast.error("An error occurred during registration");
+  const [state, formAction] = useActionState<RegisterActionState, FormData>(register, {
+    status: "idle",
+  });
+
+  useEffect(() => {
+    if (state.status === "invalid_data") {
+      console.error("Invalid data");
+      toast.error("Invalid Credentials");
+    } else if (state.status === "user_exists") {
+      console.error("User exists with that email");
+      toast.error("User already exists");
+    } else if (state.status === "failed") {
+      console.error("Failed to register user");
+      toast.error("Failed to Register User");
+    } else if (state.status === "success") {
+      toast.success("Successfull!");
+      redirect("/lessons");
     }
+  }, [state]);
+
+  const handleSubmit = (formData: FormData) => {
+    formAction(formData);
   };
 
   return <SignUp onSubmit={handleSubmit} />;

@@ -72,13 +72,22 @@ export default function LessonsPage() {
     <div className="min-h-screen bg-[#faf6eb]">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <header className="flex items-center justify-between mb-12">
-          <div className="flex items-center">
-            <ASLLogo />
-            <h1 className="ml-4 text-2xl font-bold">Your Learning Journey</h1>
+        <header className="grid grid-cols-3 items-center mb-12">
+          {/* Logo on left */}
+          <div className="flex items-start justify-start">
+            <ASLLogo size="large" />
           </div>
-          <div className="bg-white px-5 py-3 rounded-full shadow-md">
-            <span className="font-medium">Level {currentLevel}</span>
+          
+          {/* Title centered */}
+          <div className="flex justify-center">
+            <h1 className="text-2xl font-medium text-gray-700 text-center">Your Learning Journey</h1>
+          </div>
+          
+          {/* Level indicator on right */}
+          <div className="flex justify-end">
+            <div className="bg-white px-5 py-3 rounded-full shadow-md">
+              <span className="font-medium">Level {currentLevel}</span>
+            </div>
           </div>
         </header>
 

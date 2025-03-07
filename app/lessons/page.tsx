@@ -68,6 +68,20 @@ export default function LessonsPage() {
     }
   };
 
+  // Updated octagon styles with more space
+  const octagonStyles = {
+    // Less aggressive octagon for better content visibility
+    clipPath: "polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%)",
+    transform: "perspective(800px) rotateX(2deg)", // Even more subtle 3D effect
+    padding: "32px 36px", // Increased padding for content
+    minHeight: "220px", // Ensure minimum height for content
+  };
+
+  // Add these CSS classes in your component
+  const currentLessonGradient = "linear-gradient(135deg, #a8d5ff 0%, #b8e0ff 50%, #cae8ff 100%)";
+  const completedLessonGradient = "linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0f9ff 100%)";
+  const lockedLessonGradient = "linear-gradient(135deg, #f5f5f5 0%, #ffffff 50%, #f5f5f5 100%)";
+
   return (
     <div className="min-h-screen bg-[#faf6eb]">
       <div className="container mx-auto px-4 py-8">
@@ -171,15 +185,15 @@ export default function LessonsPage() {
                     transition={{ delay: index * 0.1 }}
                     className={`
                       relative flex items-center justify-center
-                      ${isLeft ? 'ml-8 mr-auto' : 'mr-8 ml-auto'}
+                      ${isLeft ? 'ml-12 mr-auto' : 'mr-12 ml-auto'} 
                       ${isLocked ? 'opacity-60' : 'opacity-100'}
                     `}
-                    style={{ width: 'calc(50% - 32px)' }}
+                    style={{ width: 'calc(50% - 40px)' }}
                   >
-                    {/* Connector path to main line */}
+                    {/* Connector path to main line - longer to accommodate larger shape */}
                     <div 
                       className={`absolute top-1/2 h-px bg-gray-300 ${isLeft ? 'right-full' : 'left-full'}`}
-                      style={{ width: '30px' }}
+                      style={{ width: '40px' }}
                     >
                       {/* Animated dot moving along connector on hover */}
                       {(isCompleted || isCurrent) && (
@@ -198,13 +212,27 @@ export default function LessonsPage() {
                     
                     {/* Lesson card */}
                     <motion.div
-                      whileHover={!isLocked ? { scale: 1.03 } : {}}
+                      whileHover={!isLocked ? { 
+                        scale: 1.03,
+                        rotateX: "0deg",
+                        boxShadow: "0 15px 30px rgba(0,0,0,0.15)"
+                      } : {}}
                       onClick={() => !isLocked && handleLessonClick(lesson.id)}
                       className={`
-                        relative block w-full p-6 rounded-xl shadow-md transition-all
+                        relative block w-full p-6 transition-all
                         ${isCurrent ? 'bg-[#b8e0ff]' : 'bg-white'}
                         ${isLocked ? 'cursor-default' : 'cursor-pointer'}
                       `}
+                      style={{
+                        ...octagonStyles,
+                        boxShadow: "0 8px 16px rgba(0,0,0,0.1), inset 0 -4px 0 rgba(0,0,0,0.1), inset 0 4px 0 rgba(255,255,255,0.3)",
+                        background: isCurrent 
+                          ? currentLessonGradient 
+                          : isCompleted 
+                            ? completedLessonGradient
+                            : lockedLessonGradient,
+                        transition: "all 0.3s ease"
+                      }}
                     >
                       {/* Celebration animation overlay */}
                       <AnimatePresence>
@@ -254,31 +282,31 @@ export default function LessonsPage() {
                       </AnimatePresence>
                       
                       {/* Status icon */}
-                      <div className="absolute -left-5 top-1/2 transform -translate-y-1/2 flex items-center justify-center w-14 h-14 rounded-full bg-white shadow-lg z-10">
+                      <div className="absolute -left-10 top-1/2 transform -translate-y-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg z-10">
                         {isCompleted && (
-                          <CheckCircle className="w-8 h-8 text-green-600" />
+                          <CheckCircle className="w-6 h-6 text-green-600" />
                         )}
                         {isCurrent && (
-                          <BookOpen className="w-8 h-8 text-blue-600" />
+                          <BookOpen className="w-6 h-6 text-blue-600" />
                         )}
                         {isLocked && (
-                          <Lock className="w-8 h-8 text-gray-400" />
+                          <Lock className="w-6 h-6 text-gray-400" />
                         )}
                       </div>
                       
-                      <h3 className="font-bold text-lg mb-2">{lesson.title}</h3>
-                      <p className="text-gray-600 text-sm mb-3">{lesson.description}</p>
+                      <h3 className="font-bold text-md mb-2">{lesson.title}</h3>
+                      <p className="text-gray-600 text-xs mb-3">{lesson.description}</p>
                       
                       {/* Progress indicators */}
-                      <div className="mt-4">
+                      <div className="mt-3">
                         {!isLocked && (
                           <>
-                            {/* Star rating */}
-                            <div className="flex space-x-1 mb-2">
+                            {/* Star rating - smaller */}
+                            <div className="flex space-x-1 mb-1">
                               {[...Array(3)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`w-5 h-5 ${
+                                  className={`w-4 h-4 ${
                                     i < lesson.stars
                                       ? 'text-yellow-400 fill-yellow-400'
                                       : 'text-gray-300'
@@ -287,10 +315,10 @@ export default function LessonsPage() {
                               ))}
                             </div>
                             
-                            {/* Progress bar */}
-                            <div className="w-full bg-gray-100 rounded-full h-1.5">
+                            {/* Progress bar - smaller height */}
+                            <div className="w-full bg-gray-100 rounded-full h-1">
                               <div 
-                                className="bg-green-500 h-1.5 rounded-full" 
+                                className="bg-green-500 h-1 rounded-full" 
                                 style={{ width: `${lesson.completionPercentage}%` }}
                               />
                             </div>
@@ -307,14 +335,15 @@ export default function LessonsPage() {
                         )}
                       </div>
                       
-                      {/* Call to action button */}
+                      {/* Call to action button - smaller */}
                       {(isCompleted || isCurrent) && (
                         <Link 
                           href={`/lessons/${lesson.id}`}
                           className={`
-                            mt-4 inline-block px-4 py-2 rounded-full text-sm font-medium
+                            mt-3 inline-block px-3 py-1.5 rounded-full text-xs font-medium
                             ${isCompleted ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}
                           `}
+                          style={{ marginBottom: "6px" }}
                         >
                           {isCompleted ? 'Review Lesson' : 'Start Learning'}
                         </Link>

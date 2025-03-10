@@ -67,13 +67,30 @@ export async function login(_: LoginActionState, formData: FormData): Promise<Lo
 export async function signInWithGoogle() {
   try {
     await signIn("google", {
-      redirectTo: "/lessons"
+      redirectTo: "/lessons",
     });
   } catch (error) {
     console.error("Failed to sign in with Google", error);
   }
 }
 
-// export async function signInWithGoogle() {
-//   redirect(`/api/auth/signin/google?callbackUrl=/lessons`);
-// }
+export async function getGesture(imageBase64: string) {
+  try {
+    const response = await fetch("http://localhost:8000/api/gesture", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ image: imageBase64 }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Python server returned ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error processing gesture recognition:", error);
+    return { gesture: "Error detecting gesture" };
+  }
+}

@@ -20,7 +20,7 @@
     "bcrypt-ts": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.4.10",
+    "framer-motion": "^12.4.11",
     "lucide-react": "^0.476.0",
     "mongodb": "^6.14.0",
     "next": "15.2.0",

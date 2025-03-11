@@ -94,3 +94,29 @@ export async function getGesture(imageBase64: string) {
     return { gesture: "Error detecting gesture" };
   }
 }
+
+export async function getNumber(imageBase64: string) {
+  try {
+    const response = await fetch("http://localhost:8000/api/number", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ image: imageBase64 }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Python server returned ${response.status}`);
+    }
+
+    const result = await response.json();
+    return { 
+      gesture: result.number, // Map number to gesture for compatibility with existing component
+      meaning: result.meaning,
+      confidence: result.confidence || "0.00"
+    };
+  } catch (error) {
+    console.error("Error processing number recognition:", error);
+    return { gesture: "Error detecting number", confidence: "0.00" };
+  }
+}

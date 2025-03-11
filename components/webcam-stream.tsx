@@ -1,11 +1,16 @@
 "use client";
 
-import { getGesture } from "@/app/actions";
+import { getGesture, getNumber } from "@/app/actions";
 import React, { useRef, useEffect, useState } from "react";
 
-const WebcamStream: React.FC = () => {
+interface WebcamStreamProps {
+  mode?: 'gesture' | 'number';
+}
+
+const WebcamStream: React.FC<WebcamStreamProps> = ({ mode = 'gesture' }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [gesture, setGesture] = useState<string>("No hand detected");
+  const [confidence, setConfidence] = useState<string>("0.00");
 
   useEffect(() => {
     async function startWebcam() {
@@ -58,12 +63,19 @@ const WebcamStream: React.FC = () => {
     if (!imageBase64) return;
 
     try {
-      const result = await getGesture(imageBase64);
+      let result;
+      if (mode === 'number') {
+        result = await getNumber(imageBase64);
+        setConfidence(result.confidence || "0.00");
+      } else {
+        result = await getGesture(imageBase64);
+      }
       setGesture(result.gesture || "No gesture detected");
-      console.log("Gesture detected:", result.gesture);
+      console.log(`${mode === 'number' ? 'Number' : 'Gesture'} detected:`, result.gesture);
     } catch (error) {
-      console.error("Error detecting gesture:", error);
-      setGesture("Error detecting gesture");
+      console.error(`Error detecting ${mode === 'number' ? 'number' : 'gesture'}:`, error);
+      setGesture(`Error detecting ${mode === 'number' ? 'number' : 'gesture'}`);
+      setConfidence("0.00");
     }
   };
 
@@ -73,14 +85,36 @@ const WebcamStream: React.FC = () => {
 
     // Clean up interval when component unmounts
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array means this runs once on mount
+  }, [mode]); // Add mode as a dependency to re-initialize when it changes
+
+  // Function to determine the color based on confidence
+  const getConfidenceColor = (conf: string): string => {
+    const confValue = parseFloat(conf);
+    if (confValue >= 0.8) return "bg-green-500";
+    if (confValue >= 0.6) return "bg-yellow-500";
+    return "bg-red-500";
+  };
 
   return (
     <div className="relative">
       <video ref={videoRef} autoPlay playsInline muted className="w-full h-full rounded-md transform scale-x-[-1]" />
 
       {/* Overlay for gesture display */}
-      <div className={`absolute bottom-0 left-0 right-0 p-4 ${gesture !== "No hand detected" && gesture !== "No recognized gesture" ? "bg-green-500" : "bg-gray-700"} text-white font-bold text-xl text-center`}>{gesture}</div>
+      <div className={`absolute bottom-0 left-0 right-0 p-4 ${gesture !== "No hand detected" && gesture !== "No recognized gesture" ? "bg-green-500" : "bg-gray-700"} text-white font-bold text-xl text-center`}>
+        {mode === 'number' ? (
+          <div className="flex justify-between items-center">
+            <span>Number: {gesture}</span>
+            <div className="flex items-center">
+              <span className="mr-2">Confidence:</span>
+              <span className={`px-2 py-1 rounded ${getConfidenceColor(confidence)}`}>
+                {confidence}
+              </span>
+            </div>
+          </div>
+        ) : (
+          `Gesture: ${gesture}`
+        )}
+      </div>
     </div>
   );
 };

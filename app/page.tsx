@@ -1,8 +1,13 @@
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { auth } from "@/auth"
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
+  if(session) redirect("/lessons");
+
   return (
     <main className="min-h-screen bg-[#faf6eb]">
       <div className="container mx-auto px-4 py-8 max-w-6xl">

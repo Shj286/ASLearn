@@ -24,8 +24,7 @@ const WebcamStream: React.FC = () => {
     }
 
     startWebcam();
-
-    // Cleanup function to stop the stream when component unmounts
+    
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
@@ -68,12 +67,9 @@ const WebcamStream: React.FC = () => {
   };
 
   useEffect(() => {
-    // Set up interval for gesture detection
     const intervalId = setInterval(detectGesture, 100);
-
-    // Clean up interval when component unmounts
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   return (
     <div className="relative">

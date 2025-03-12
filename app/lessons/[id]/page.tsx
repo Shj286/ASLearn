@@ -1,8 +1,11 @@
 import Link from "next/link";
 import WebcamStream from "@/components/webcam-stream";
+import { getLesson } from "@/lib/utils";
 
 export default async function Page (props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
+  
+  const lesson = getLesson(id);
 
   return (
     <div className="w-full">
@@ -37,12 +40,14 @@ export default async function Page (props: { params: Promise<{ id: string }> }) 
           <div className="md:col-span-2 space-y-4">
             {/* Video/Image Container */}
             <div className="relative bg-white p-2 rounded-md">
-              <WebcamStream />
+              <WebcamStream mode={lesson?.mode} />
             </div>
 
             {/* Title Card */}
             <div className="bg-white p-6 rounded-md">
-              <h1 className="text-2xl font-medium text-center">Current Lesson ID: {id}</h1>
+              <p className="text-center mt-2 text-gray-600">
+                {lesson?.title_card}
+              </p>
             </div>
           </div>
 
@@ -51,7 +56,9 @@ export default async function Page (props: { params: Promise<{ id: string }> }) 
             {/* Purple Sign Image */}
             <div className="bg-white p-2 rounded-md">
               <div className="relative aspect-square bg-purple-500 rounded">
-                <div className="p-4 text-white font-handwriting text-lg">forgot how to spell it</div>
+                <div className="p-4 text-white font-handwriting text-lg">
+                  {id === "3" ? "Show numbers with your hand" : "forgot how to spell it"}
+                </div>
                 <div className="absolute bottom-0 right-0 p-4">
                   <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20 15C25 10 35 15 40 25C45 35 50 40 45 45" stroke="white" strokeWidth="2" />
@@ -62,12 +69,15 @@ export default async function Page (props: { params: Promise<{ id: string }> }) 
 
             {/* Tutorials List */}
             <div className="bg-white p-6 rounded-md">
-              <h2 className="text-2xl font-medium mb-4">Tutorials</h2>
+              <h2 className="text-2xl font-medium mb-4">
+                {lesson?.tutorial_title}
+              </h2>
               <ol className="list-decimal list-inside space-y-3">
-                <li className="font-medium">Alphabets</li>
-                <li className="font-medium">Greetings</li>
-                <li className="font-medium">Introducing yourself</li>
-                <li className="font-medium">Common phrases</li>
+                {lesson?.instructions.map((instruction, index) => {
+                  return(
+                    <li className="font-medium" key={index}>{instruction}</li>
+                  )
+                })}
               </ol>
             </div>
           </div>

@@ -1,9 +1,13 @@
 "use client";
 
-import { getGesture } from "@/app/actions";
+import { getGesture, getNumber } from "@/app/actions";
 import React, { useRef, useEffect, useState } from "react";
 
-const WebcamStream: React.FC = () => {
+interface WebcamStreamProps {
+  mode?: "gesture" | "number";
+}
+
+const WebcamStream: React.FC<WebcamStreamProps> = ({ mode = "gesture" }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [gesture, setGesture] = useState<string>("No hand detected");
 
@@ -24,7 +28,7 @@ const WebcamStream: React.FC = () => {
     }
 
     startWebcam();
-    
+
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
@@ -57,12 +61,23 @@ const WebcamStream: React.FC = () => {
     if (!imageBase64) return;
 
     try {
-      const result = await getGesture(imageBase64);
+      let result;
+      if (mode === "number") {
+        result = await getNumber(imageBase64);
+      } else {
+        result = await getGesture(imageBase64);
+      }
       setGesture(result.gesture || "No gesture detected");
-      console.log("Gesture detected:", result.gesture);
+      console.log(
+        `${mode === "number" ? "Number" : "Gesture"} detected:`,
+        result.gesture
+      );
     } catch (error) {
-      console.error("Error detecting gesture:", error);
-      setGesture("Error detecting gesture");
+      console.error(
+        `Error detecting ${mode === "number" ? "number" : "gesture"}:`,
+        error
+      );
+      setGesture(`Error detecting ${mode === "number" ? "number" : "gesture"}`);
     }
   };
 
@@ -73,10 +88,24 @@ const WebcamStream: React.FC = () => {
 
   return (
     <div className="relative">
-      <video ref={videoRef} autoPlay playsInline muted className="w-full h-full rounded-md transform scale-x-[-1]" />
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        className="w-full h-full rounded-md transform scale-x-[-1]"
+      />
 
       {/* Overlay for gesture display */}
-      <div className={`absolute bottom-0 left-0 right-0 p-4 ${gesture !== "No hand detected" && gesture !== "No recognized gesture" ? "bg-green-500" : "bg-gray-700"} text-white font-bold text-xl text-center`}>{gesture}</div>
+      <div
+        className={`absolute bottom-0 left-0 right-0 p-4 ${
+          gesture !== "No hand detected" && gesture !== "No recognized gesture"
+            ? "bg-green-500"
+            : "bg-gray-700"
+        } text-white font-bold text-xl text-center`}>
+        {mode === "number" ? "Number: " : "Gesture: "}
+        {gesture}
+      </div>
     </div>
   );
 };

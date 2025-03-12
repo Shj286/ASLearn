@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LessonsPage() {
   // This would come from your database in a real app
-  const [currentLevel, setCurrentLevel] = useState(2);
+  const [currentLevel, setCurrentLevel] = useState(3);
   const [showAnimation, setShowAnimation] = useState(false);
   const [animatingLesson, setAnimatingLesson] = useState<number | null>(null);
   

@@ -1,23 +1,21 @@
 import Link from "next/link";
 import WebcamStream from "@/components/webcam-stream";
 import { getLesson } from "@/lib/utils";
+import ASLLogo from "@/components/asl-logo";
 
 export default async function Page (props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
   
   const lesson = getLesson(id);
+  const signs = new Set(lesson?.signs);
+  
+  if(signs.size == 0) // display finished!
 
   return (
     <div className="w-full">
       {/* Header */}
       <header className="flex items-center justify-between p-4 bg-white">
-        <div className="flex items-center space-x-2">
-          <div className="font-serif italic">
-            <span className="text-2xl">A</span>
-            <span className="text-2xl ml-1">S</span>
-            <span className="tracking-widest ml-2">L E A R N</span>
-          </div>
-        </div>
+        <ASLLogo />
 
         {/* Navigation */}
         <nav className="flex space-x-12">
@@ -40,7 +38,7 @@ export default async function Page (props: { params: Promise<{ id: string }> }) 
           <div className="md:col-span-2 space-y-4">
             {/* Video/Image Container */}
             <div className="relative bg-white p-2 rounded-md">
-              <WebcamStream mode={lesson?.mode} />
+              <WebcamStream mode={lesson?.mode} signs={signs} />
             </div>
 
             {/* Title Card */}
@@ -53,20 +51,11 @@ export default async function Page (props: { params: Promise<{ id: string }> }) 
 
           {/* Right Column - Tutorial Info */}
           <div className="space-y-4">
-            {/* Purple Sign Image */}
-            <div className="bg-white p-2 rounded-md">
-              <div className="relative aspect-square bg-purple-500 rounded">
-                <div className="p-4 text-white font-handwriting text-lg">
-                  {id === "3" ? "Show numbers with your hand" : "forgot how to spell it"}
-                </div>
-                <div className="absolute bottom-0 right-0 p-4">
-                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 15C25 10 35 15 40 25C45 35 50 40 45 45" stroke="white" strokeWidth="2" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
+            <video 
+              src={`${lesson?.video}?v=${Date.now()}`} 
+              className="bg-white p-6 rounded-md w-full"
+              controls
+            />
             {/* Tutorials List */}
             <div className="bg-white p-6 rounded-md">
               <h2 className="text-2xl font-medium mb-4">

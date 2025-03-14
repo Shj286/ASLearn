@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { auth } from "@/auth"
 import { redirect } from "next/navigation";
+import ASLLogo from "@/components/asl-logo";
 
 export default async function Home() {
   const session = await auth();
@@ -13,13 +14,7 @@ export default async function Home() {
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Updated Header to match sign-in page */}
         <header className="mb-12 pt-4">
-          <div className="flex items-center">
-            <span className="text-3xl font-serif italic">ASL</span>
-            <div className="ml-1 flex">
-              {/* Sign language finger spelling for "LEARN" */}
-              <span className="text-xs tracking-widest mt-1">LEARN</span>
-            </div>
-          </div>
+          <ASLLogo />
         </header>
 
         {/* Feature Cards */}

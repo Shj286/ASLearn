@@ -1,7 +1,7 @@
 [
-  { 
-    "id": "1", 
-    "mode": "gesture", 
+  {
+    "id": "1",
+    "mode": "gesture",
     "title_card": "Practice some easy gestures",
     "tutorial_title": "Tutorials",
     "instructions": [
@@ -12,20 +12,24 @@
       "Sign Like 👍",
       "Sign Dislike 👎",
       "Sign Peace ✌️"
-    ]
+    ],
+    "video": "/gestures_lesson.mp4",
+    "signs": ["love", "right", "left", "forward", "like", "dislike", "peace"]
   },
   {
     "id": "2",
     "mode": "number",
-    "title_card": "Practice showing numbers 0-9 with your hand gestures",
+    "title_card": "Practice showing numbers 0-5 with your hand gestures",
     "tutorial_title": "Number Gestures",
     "instructions": [
       "Show 0 with a closed fist",
       "Show 1 with index finger",
-      "Show 2 with index and middle fingers", 
+      "Show 2 with index and middle fingers",
       "Show 3 with index, middle, and ring fingers",
       "Show 4 with all fingers except thumb",
       "Show 5 with all fingers extended"
-    ]
+    ],
+    "signs": ["0", "1", "2", "3", "4", "5"],
+    "video": "/numbers_lesson.mp4"
   }
 ]

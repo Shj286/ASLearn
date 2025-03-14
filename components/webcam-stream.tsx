@@ -5,6 +5,7 @@ import React, { useRef, useEffect, useState } from "react";
 
 interface WebcamStreamProps {
   mode?: "gesture" | "number";
+  signs: Set<string>;
 }
 
 const WebcamStream: React.FC<WebcamStreamProps> = ({ mode = "gesture" }) => {

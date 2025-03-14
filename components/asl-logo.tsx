@@ -1,21 +1,11 @@
-export default function ASLLogo({ size = "normal" }: { size?: "normal" | "large" }) {
-  const textSizes = {
-    normal: "text-3xl",
-    large: "text-4xl"
-  };
-  
-  const subtitleSizes = {
-    normal: "text-xs",
-    large: "text-sm"
-  };
-  
+export default function ASLLogo() {
   return (
-    <div className="flex items-center">
-      <span className={`${textSizes[size]} font-serif italic font-bold`}>ASL</span>
-      <div className="ml-1 flex">
-        <span className={`${subtitleSizes[size]} tracking-widest mt-1`}>LEARN</span>
+    <div className="flex items-center space-x-2">
+      <div className="font-serif italic">
+        <span className="text-2xl">A</span>
+        <span className="text-2xl ml-1">S</span>
+        <span className="tracking-widest ml-2">L E A R N</span>
       </div>
     </div>
   );
 }
-

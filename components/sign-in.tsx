@@ -7,6 +7,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { signIn } from "next-auth/react";
+import ASLLogo from "./asl-logo";
 
 export default function SignIn({ onSubmit }: { onSubmit: (formData: FormData) => void }) {
   const [email, setEmail] = useState("");
@@ -22,13 +23,7 @@ export default function SignIn({ onSubmit }: { onSubmit: (formData: FormData) =>
       <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div className="mb-10">
-            <div className="flex items-center">
-              <span className="text-3xl font-serif italic">ASL</span>
-              <div className="ml-1 flex">
-                {/* Sign language finger spelling for "LEARN" */}
-                <span className="text-xs tracking-widest mt-1">LEARN</span>
-              </div>
-            </div>
+            <ASLLogo />
           </div>
 
           <div className="mt-10">

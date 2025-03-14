@@ -75,7 +75,7 @@ export default function LessonsPage() {
         <header className="grid grid-cols-3 items-center mb-12">
           {/* Logo on left */}
           <div className="flex items-start justify-start">
-            <ASLLogo size="large" />
+            <ASLLogo />
           </div>
           
           {/* Title centered */}

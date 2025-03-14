@@ -4,4 +4,6 @@ export interface Lesson {
   title_card: string;
   tutorial_title: string;
   instructions: string[];
+  video: string;
+  signs: string;
 }

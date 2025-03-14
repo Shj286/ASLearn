@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import lessons from "@/app/lessons.json";
@@ -12,3 +13,4 @@ export function getLesson(id: string) {
 
   return typedLessons.find((lesson) => lesson.id === id) || null;
 }
+

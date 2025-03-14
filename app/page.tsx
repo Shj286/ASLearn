@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { auth } from "@/auth"
@@ -104,4 +105,5 @@ export default async function Home() {
     </main>
   )
 }
+
 

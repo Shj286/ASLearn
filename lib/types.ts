@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 export interface Lesson {
   id: string;
   mode: "gesture" | "number";
@@ -7,3 +8,4 @@ export interface Lesson {
   video: string;
   signs: string;
 }
+

@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 "use server";
 
 import { genSaltSync, hashSync } from "bcrypt-ts";

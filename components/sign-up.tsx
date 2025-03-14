@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 "use client";
 
 import React from "react";
@@ -132,3 +133,4 @@ export default function SignUp({ onSubmit }: { onSubmit: (formData: FormData) =>
     </div>
   );
 }
+

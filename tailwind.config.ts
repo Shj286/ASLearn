@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],

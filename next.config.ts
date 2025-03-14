@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -5,3 +6,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+

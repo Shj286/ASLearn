@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 export default function ASLLogo() {
   return (
     <div className="flex items-center space-x-2">
@@ -9,3 +10,4 @@ export default function ASLLogo() {
     </div>
   );
 }
+

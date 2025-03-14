@@ -1,3 +1,4 @@
+# COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, File, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
 import cv2
@@ -108,7 +109,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
         # Process the frame and get hand landmarks
         results = hands.process(rgb_frame)
         
-        detected_gesture = "No hand detected"
+        detected_gesture = []
+        detected_gesture = ["No hand detected", "None"]
         
         if results.multi_hand_landmarks:
             logger.debug("Hand detected in frame")
@@ -134,12 +136,14 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                 # LIKE (Thumbs-up)
                 if lm_list[thumb_tip].y < lm_list[thumb_tip - 1].y < lm_list[thumb_tip - 2].y:
                     if all(finger_fold_status):
-                        detected_gesture = "LIKE"
+                        detected_gesture[0] = "LIKE"
+                        detected_gesture[1] = "like"
                 
                 # DISLIKE (Thumbs-down)
                 if lm_list[thumb_tip].y > lm_list[thumb_tip - 1].y > lm_list[thumb_tip - 2].y:
                     if all(finger_fold_status):
-                        detected_gesture = "DISLIKE"
+                        detected_gesture[0] = "DISLIKE"
+                        detected_gesture[1] = "dislike"
                 
                 # OK
                 thumb_x, thumb_y = lm_list[thumb_tip].x, lm_list[thumb_tip].y
@@ -148,7 +152,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                 
                 if distance < 0.05:
                     if not finger_fold_status[1] and not finger_fold_status[2] and not finger_fold_status[3]:
-                        detected_gesture = "OK"
+                        detected_gesture[0] = "OK"
+                        detected_gesture[1] = "ok"
                 
                 # PEACE
                 thumb_x, thumb_y = lm_list[thumb_tip].x, lm_list[thumb_tip].y
@@ -160,7 +165,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                 
                 if distance_thumb_ring < 0.05 and distance_ring_pinky < 0.05:
                     if not finger_fold_status[0] and not finger_fold_status[1]:
-                        detected_gesture = "PEACE"
+                        detected_gesture[0] = "PEACE"
+                        detected_gesture[1] = "peace"
                 
                 # CALL ME
                 if finger_fold_status[0] and finger_fold_status[1] and finger_fold_status[3]:
@@ -169,7 +175,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                     distance_thumb_pinky = ((thumb_x - pinky_x) ** 2 + (thumb_y - pinky_y) ** 2) ** 0.5
                     
                     if distance_thumb_pinky > 0.4:
-                        detected_gesture = "CALL ME"
+                        detected_gesture[0] = "CALL ME"
+                        detected_gesture[1] = "call"
                 
                 # STOP
                 if (lm_list[thumb_tip].y < lm_list[thumb_tip - 1].y < lm_list[thumb_tip - 2].y and
@@ -177,7 +184,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                         lm_list[12].y < lm_list[10].y < lm_list[9].y and
                         lm_list[16].y < lm_list[14].y < lm_list[13].y and
                         lm_list[20].y < lm_list[18].y < lm_list[17].y):
-                    detected_gesture = "STOP"
+                    detected_gesture[0] = "STOP"
+                    detected_gesture[1] = "stop"
                 
                 # FORWARD
                 if (lm_list[8].y < lm_list[6].y < lm_list[5].y and
@@ -185,7 +193,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                     lm_list[16].y > lm_list[15].y > lm_list[14].y and
                     lm_list[20].y > lm_list[19].y > lm_list[18].y and
                     lm_list[thumb_tip].x > lm_list[thumb_tip - 1].x):
-                    detected_gesture = "FORWARD"
+                    detected_gesture[0] = "FORWARD"
+                    detected_gesture[1] = "forward"
                 
                 # LEFT
                 if (lm_list[4].y < lm_list[2].y and
@@ -194,7 +203,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                         lm_list[16].x > lm_list[14].x and
                         lm_list[20].x > lm_list[18].x and
                         lm_list[5].x < lm_list[0].x):
-                    detected_gesture = "LEFT"
+                    detected_gesture[0] = "LEFT"
+                    detected_gesture[1] = "left"
                 
                 # RIGHT
                 if (lm_list[4].y < lm_list[2].y and
@@ -202,7 +212,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                         lm_list[12].x < lm_list[10].x and
                         lm_list[16].x < lm_list[14].x and
                         lm_list[20].x < lm_list[18].x):
-                    detected_gesture = "RIGHT"
+                    detected_gesture[0] = "RIGHT"
+                    detected_gesture[1] = "right"
                 
                 # I LOVE YOU
                 if (lm_list[8].y < lm_list[6].y < lm_list[5].y and
@@ -210,7 +221,8 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
                         lm_list[16].y > lm_list[15].y > lm_list[14].y and
                         lm_list[20].y < lm_list[19].y < lm_list[18].y and
                         lm_list[thumb_tip].x > lm_list[thumb_tip - 1].x):
-                    detected_gesture = "I LOVE YOU"
+                    detected_gesture[0] = "I LOVE YOU"
+                    detected_gesture[1] = "love"
             
                 # Log when gesture changes
                 if detected_gesture != "No hand detected":
@@ -218,8 +230,9 @@ async def recognize_gesture(request: Request) -> Dict[str, str]:
             
         # Return the detected gesture
         return {
-            "gesture": detected_gesture,
-            "meaning": SUPPORTED_GESTURES.get(detected_gesture, "No gesture detected")
+            "gesture": detected_gesture[0],
+            "sign": detected_gesture[1],
+            "meaning": SUPPORTED_GESTURES.get(detected_gesture[0], "No gesture detected")
         }
     
     except Exception as e:

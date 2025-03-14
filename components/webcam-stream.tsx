@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 "use client";
 
 import { getGesture, getNumber } from "@/app/actions";
@@ -8,7 +9,10 @@ interface WebcamStreamProps {
   signs: Set<string>;
 }
 
-const WebcamStream: React.FC<WebcamStreamProps> = ({ mode = "gesture" }) => {
+const WebcamStream: React.FC<WebcamStreamProps> = ({
+  mode = "gesture",
+  signs,
+}: WebcamStreamProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [gesture, setGesture] = useState<string>("No hand detected");
 
@@ -69,6 +73,7 @@ const WebcamStream: React.FC<WebcamStreamProps> = ({ mode = "gesture" }) => {
         result = await getGesture(imageBase64);
       }
       setGesture(result.gesture || "No gesture detected");
+      signs.delete(result.sign);
       console.log(
         `${mode === "number" ? "Number" : "Gesture"} detected:`,
         result.gesture
@@ -112,3 +117,4 @@ const WebcamStream: React.FC<WebcamStreamProps> = ({ mode = "gesture" }) => {
 };
 
 export default WebcamStream;
+

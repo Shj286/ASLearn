@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 "use server";
 
 import { signIn } from "@/auth";
@@ -120,3 +121,4 @@ export async function getNumber(imageBase64: string) {
     return { gesture: "Error detecting number", confidence: "0.00" };
   }
 }
+

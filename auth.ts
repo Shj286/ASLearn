@@ -1,3 +1,4 @@
+// COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -87,3 +88,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+

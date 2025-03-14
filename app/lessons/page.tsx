@@ -7,7 +7,6 @@ import ASLLogo from "@/components/asl-logo";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function LessonsPage() {
-  // This would come from your database in a real app
   const [currentLevel, setCurrentLevel] = useState(3);
   const [showAnimation, setShowAnimation] = useState(false);
   const [animatingLesson, setAnimatingLesson] = useState<number | null>(null);
@@ -22,17 +21,18 @@ export default function LessonsPage() {
     },
     { 
       id: 2, 
-      title: "Common Greetings", 
-      description: "Master everyday greetings and introductions",
-      stars: 2,
-      completionPercentage: 75 
-    },
-    { 
-      id: 3, 
       title: "Numbers & Counting", 
       description: "Learn to count and express numbers",
       stars: 0,
       completionPercentage: 0
+      
+    },
+    { 
+      id: 3, 
+      title: "Common Greetings", 
+      description: "Master everyday greetings and introductions",
+      stars: 2,
+      completionPercentage: 75 
     },
     { 
       id: 4, 

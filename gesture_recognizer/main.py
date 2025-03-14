@@ -1,5 +1,5 @@
 # COMP 3450: Mfon Udoh, Pasang Sherpa, Shubham Jangra
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, File, UploadFile, Request
+from fastapi import FastAPI, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
 import cv2
 import mediapipe as mp
